@@ -1,0 +1,26 @@
+service: l2l
+provider:
+  name: aws
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+        - "lambda:InvokeAsync"
+      Resource: "*"
+  runtime: nodejs18.x
+  stage: dev
+  region: us-east-1
+  environment:
+    FUNCTION_PREFIX: ${self:service}-${self:provider.stage}
+    REGION: ${self:provider.region}
+
+plugins:
+  - serverless-offline
+
+functions:
+  lambda-two:
+    handler: two.handler
+  lambda-three:
+    handler: invoqueGeolocation.handler
+    events:
+      - http: GET /invoke
