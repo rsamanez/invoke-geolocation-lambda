@@ -1,5 +1,5 @@
 <!--
-title: 'AWS Simple HTTP Endpoint example in NodeJS'
+title: 'Sample to invoke Geolocation lambda Function to get address coordinates'
 description: 'This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.'
 layout: Doc
 framework: v3
@@ -10,13 +10,8 @@ authorName: 'Serverless, inc.'
 authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
 -->
 
-# Serverless Framework Node HTTP API on AWS
 
-This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.
-
-This template does not include any kind of persistence (database). For more advanced examples, check out the [serverless/examples repository](https://github.com/serverless/examples/) which includes Typescript, Mongo, DynamoDB and other examples.
-
-## Usage
+## Sample to invoke Geolocation lambda Function to get address coordinates
 
 ### Deployment
 
@@ -27,13 +22,13 @@ $ serverless deploy
 After deploying, you should see output similar to:
 
 ```bash
-Deploying aws-node-http-api-project to stage dev (us-east-1)
+Deploying l2l to stage dev (us-east-1)
 
-✔ Service deployed to stack aws-node-http-api-project-dev (152s)
+✔ Service deployed to stack l2l-dev (152s)
 
-endpoint: GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/
+endpoint: GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/dev/invoke
 functions:
-  hello: aws-node-http-api-project-dev-hello (1.9 kB)
+  invoqueGeolocation: l2l-dev-lambda-three (1.9 kB)
 ```
 
 _Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [http event docs](https://www.serverless.com/framework/docs/providers/aws/events/apigateway/).
@@ -43,17 +38,18 @@ _Note_: In current form, after deployment, your API is public and can be invoked
 After successful deployment, you can call the created application via HTTP:
 
 ```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
+curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/dev/invoke
 ```
 
-Which should result in response similar to the following (removed `input` content for brevity):
+response:
 
 ```json
 {
-  "message": "Go Serverless v2.0! Your function executed successfully!",
-  "input": {
-    ...
-  }
+    "status": "SUCCESS",
+    "response": {
+        "lat": 25.7962812,
+        "lng": -80.1307368
+    }
 }
 ```
 
@@ -62,15 +58,44 @@ Which should result in response similar to the following (removed `input` conten
 You can invoke your function locally by using the following command:
 
 ```bash
-serverless invoke local --function hello
+serverless invoke local --function lambda-three
 ```
 
 Which should result in response similar to the following:
 
 ```
 {
-  "statusCode": 200,
-  "body": "{\n  \"message\": \"Go Serverless v3.0! Your function executed successfully!\",\n  \"input\": \"\"\n}"
+  address1: '337 20th St',
+  address2: '',
+  city: 'Miami Beach',
+  state: 'FL',
+  postalCode: '33139'
+}
+RESPONSE: {
+  '$metadata': {
+    httpStatusCode: 200,
+    requestId: 'd19e922d-074f-4cd1-a15c-b840b8df7900',
+    extendedRequestId: undefined,
+    cfId: undefined,
+    attempts: 1,
+    totalRetryDelay: 0
+  },
+  ExecutedVersion: '$LATEST',
+  Payload: Uint8ArrayBlobAdapter(36) [Uint8Array] [
+    123,  34, 108,  97, 116, 34, 58, 50,  53,
+     46,  55,  57,  54,  50, 56, 49, 50,  44,
+     34, 108, 110, 103,  34, 58, 45, 56,  48,
+     46,  49,  51,  48,  55, 51, 54, 56, 125
+  ],
+  StatusCode: 200
+}
+{
+    "statusCode": 200,
+    "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true
+    },
+    "body": "{\"status\":\"SUCCESS\",\"response\":{\"lat\":25.7962812,\"lng\":-80.1307368}}"
 }
 ```
 
